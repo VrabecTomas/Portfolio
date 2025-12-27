@@ -22,10 +22,10 @@ index_static.html
 
 ## ⭐ Na co jsem nejvíce hrdý
 
-1. **🌌 Animace černé díry** - CSS-only galaxie s rotujícím akrečním diskem
+1. **🌌 Animace černé díry** - CSS-only galaxie
 2. **✨ Částicový systém** - 80 plovoucích částic reagujících na barvu tématu  
 3. **🎨 Přepínač témat** - 4 barevná schémata měnící celý web okamžitě
-4. **📱 Responsivita** - Funguje na všech zařízeních bez scrollování
+4. **📱 Responsivita** - Funguje na všech zařízeních
 
 ## 📁 Struktura souborů
 
