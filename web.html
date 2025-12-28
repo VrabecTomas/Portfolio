@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Moderní portfolio webového vývojáře Tomáše Vrabce. Specializace na Front-End, UI/UX a interaktivní design.">
+    <meta name="author" content="Tomáš Vrabec">
+    <meta name="keywords" content="Portfolio, Web Developer, Front-End, HTML, CSS, JavaScript, UI/UX, Design, Black Hole">
+    
+    <title>Tomáš Vrabec | Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #00f3ff;
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #888;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden; /* NO SCROLL */
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(600px circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, 0.03), transparent 40%),
+                        radial-gradient(ellipse at center, #111 0%, #000 80%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* PARTICLES */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* MAIN CONTAINER - FULL VIEWPORT */
+        .container {
+            height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: 20px;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+        
+        /* BLACK HOLE BACKGROUND (Exact Dark AI Style) */
+        .black-hole-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            z-index: 0;
+            opacity: 0.3; /* Less visible */
+            pointer-events: none;
+        }
+        
+        .black-hole {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #000 40%, transparent 70%);
+            box-shadow: 
+                0 0 80px rgba(0, 243, 255, 0.2),
+                0 0 120px rgba(0, 200, 255, 0.1);
+            position: relative;
+            animation: pulseVoid 8s infinite alternate;
+        }
+        
+        .accretion-disk {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top: 1px solid rgba(0, 243, 255, 0.3);
+            border-right: 1px solid rgba(0, 200, 255, 0.2);
+            animation: spin 20s linear infinite;
+            filter: blur(2px);
+        }
+        
+        .accretion-disk::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-bottom: 2px solid rgba(0, 243, 255, 0.15);
+            border-left: 2px solid rgba(0, 180, 255, 0.1);
+            animation: spinReverse 15s linear infinite;
+        }
+        
+        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+        @keyframes pulseVoid { 
+            0% { opacity: 0.4; }
+            100% { opacity: 0.6; }
+        }
+        
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        @keyframes pulse-border {
+            0% { border-color: var(--glass-border); box-shadow: 0 0 0 rgba(0, 243, 255, 0); }
+            100% { border-color: rgba(0, 243, 255, 0.5); box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
+        }
+        
+        /* MAIN CONTENT */
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            padding: 40px;
+        }
+        
+        /* LEFT - INFO */
+        .info {
+            max-width: 500px;
+            transform: none !important; /* Disable any 3D tilt effect */
+        }
+        
+        .info h1 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+        
+        .info h1 span { 
+            color: var(--text-main);
+            position: relative;
+            display: inline-block;
+        }
+
+        /* GLITCH EFFECT */
+        .info h1 span::before,
+        .info h1 span::after {
+            content: 'Tomáš Vrabec'; /* MUST MATCH TEXT */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+        }
+
+        .info h1 span::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-1 5s infinite linear alternate-reverse;
+        }
+
+        .info h1 span::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(20px, 9999px, 15px, 0); }
+            20% { clip: rect(60px, 9999px, 70px, 0); }
+            40% { clip: rect(20px, 9999px, 15px, 0); }
+            60% { clip: rect(80px, 9999px, 5px, 0); }
+            80% { clip: rect(10px, 9999px, 60px, 0); }
+            100% { clip: rect(50px, 9999px, 30px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(15px, 9999px, 70px, 0); }
+            20% { clip: rect(40px, 9999px, 10px, 0); }
+            40% { clip: rect(70px, 9999px, 30px, 0); }
+            60% { clip: rect(20px, 9999px, 60px, 0); }
+            80% { clip: rect(5px, 9999px, 20px, 0); }
+            100% { clip: rect(60px, 9999px, 40px, 0); }
+        }
+        
+        .info p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        /* SKILLS */
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .skill {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .skill:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        /* BUTTONS */
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+        
+        .btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+        
+        .btn.primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #000;
+        }
+        
+        .btn.primary:hover {
+            background: transparent;
+            color: var(--primary-color);
+        }
+        
+        /* RIGHT - VISUAL CARD */
+        .card {
+            width: 320px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            animation: pulse-border 4s infinite alternate, float 6s ease-in-out infinite;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .card-header span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .card ul {
+            list-style: none;
+        }
+        
+        .card li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .card li:last-child { border: none; }
+        
+        .card li span:last-child { color: var(--text-main); }
+        
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        /* THEME SWITCHER */
+        .theme-switch {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .theme-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-btn:hover { transform: scale(1.2); }
+        .theme-btn.active { border-color: #fff; }
+        
+        .theme-btn.cyan { background: #00f3ff; }
+        .theme-btn.purple { background: #bd93f9; }
+        .theme-btn.green { background: #00ff88; }
+        .theme-btn.red { background: #ff5f56; }
+        .theme-btn.white { background: #ffffff; }
+        .theme-btn.orange { background: #ffa502; }
+        
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        /* SETTINGS PANEL */
+        .settings-wrapper {
+            position: relative;
+        }
+        
+        .settings-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .settings-btn:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+        
+        .settings-panel {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        
+        .lang-switch {
+            display: flex;
+            gap: 5px;
+            background: var(--bg-card);
+            padding: 3px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .lang-btn.active {
+            background: var(--primary-color);
+            color: #000;
+        }
+        
+        .settings-panel.hidden {
+            display: none;
+        }
+        
+        .settings-section {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .settings-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .settings-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover { color: var(--primary-color); }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .project-card:hover {
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.15);
+        }
+
+        .project-title {
+            color: var(--primary-color);
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .project-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            main {
+                flex-direction: column;
+                gap: 30px;
+                padding: 20px;
+            }
+            .card { width: 100%; max-width: 400px; }
+            .info { text-align: center; }
+            .skills { justify-content: center; }
+            .buttons { justify-content: center; }
+        }
+        
+        @media (max-width: 600px) {
+            .info h1 { font-size: 1.8rem; }
+            .buttons { flex-direction: column; }
+            .black-hole-container { width: 300px; height: 300px; } /* Scale down on mobile */
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <canvas id="particles"></canvas>
+    
+    <!-- Black Hole Background -->
+    <div class="black-hole-container">
+        <div class="black-hole">
+            <div class="accretion-disk"></div>
+        </div>
+    </div>
+    <div class="container">
+        <header>
+            <div class="logo">PORTFOLIO</div>
+            <div class="settings-wrapper">
+                <button class="settings-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
+                <div id="settings-panel" class="settings-panel hidden">
+                    <div class="settings-section">
+                        <span class="settings-label" data-key="language">Language</span>
+                        <div class="lang-switch">
+                            <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+                            <button class="lang-btn" onclick="setLanguage('cs')">CZ</button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <span class="settings-label" data-key="theme">Theme Color</span>
+                        <div class="theme-switch">
+                            <button class="theme-btn cyan active" onclick="setTheme('#00f3ff')" title="Cyan"></button>
+                            <button class="theme-btn purple" onclick="setTheme('#bd93f9')" title="Purple"></button>
+                            <button class="theme-btn green" onclick="setTheme('#00ff88')" title="Green"></button>
+                            <button class="theme-btn red" onclick="setTheme('#ff5f56')" title="Red"></button>
+                            <button class="theme-btn white" onclick="setTheme('#ffffff')" title="White"></button>
+                            <button class="theme-btn orange" onclick="setTheme('#ffa502')" title="Orange"></button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <span class="settings-label" data-key="effects">Effects</span>
+                        <label class="toggle-row">
+                            <span data-key="particles">Particles</span>
+                            <input type="checkbox" id="particles-toggle" checked onchange="toggleParticles()">
+                        </label>
+                        <label class="toggle-row">
+                            <span data-key="blackHole">Black Hole</span>
+                            <input type="checkbox" id="blackhole-toggle" checked onchange="toggleBlackhole()">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="info">
+                <h1><span class="glitch" data-text="Tomáš Vrabec">Tomáš Vrabec</span></h1>
+                <p data-key="description">IT Student & Web Developer. Passionate about modern design, AI, and turning ideas into digital reality.</p>
+                
+                <div class="skills">
+                    <span class="skill">HTML5</span>
+                    <span class="skill">CSS3</span>
+                    <span class="skill">JavaScript</span>
+                    <span class="skill" data-key="skillRespons">Responsive</span>
+                    <span class="skill">UI/UX</span>
+                </div>
+                
+                
+                <!-- WORK SECTION -->
+                <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; margin-top: 30px; color: var(--text-muted);" data-key="projectsTitle">Featured Work</h3>
+                <div class="buttons" style="margin-bottom: 30px;">
+                    <button onclick="openModal()" class="btn" data-key="projectsBtn" style="border: 1px solid var(--primary-color); box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);">
+                         Projects
+                    </button>
+                </div>
+
+                <!-- CONTACT SECTION -->
+                <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; color: var(--text-muted);" data-key="contactHeader">Contact Me</h3>
+                <div class="buttons">
+                    <a href="mailto:tomas.vrabec024@skolavdf.cz" class="btn primary">
+                        ✉️ E-mail
+                    </a>
+                    <a href="https://github.com/VrabecTomas" target="_blank" class="btn">
+                        <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span>// PROFILE DATA</span>
+                    <span>2025</span>
+                </div>
+                <h3><span data-key="quickInfo">Quick Info</span></h3>
+                <ul>
+                    <li><span data-key="locationLabel">Location</span><span data-key="locationValue">Czech Republic</span></li>
+                    <li><span data-key="focusLabel">Focus</span><span data-key="focusValue">Front-End</span></li>
+                    <li><span data-key="expLabel">Experience</span><span data-key="expValue">Student</span></li>
+                    <li><span data-key="statusLabel">Status</span><span style="color: #00ff88;" data-key="statusValue">● Active</span></li>
+                </ul>
+            </div>
+        </main>
+        
+        <!-- PROJECT MODAL -->
+        <div id="project-modal" class="modal-overlay" onclick="closeModal(event)">
+            <div class="modal-content">
+                <button class="modal-close" onclick="toggleModal(false)">✕</button>
+                <h2 style="font-family: 'Space Mono'; margin-bottom: 20px; color: var(--text-main);" data-key="projectsTitle">Featured Work</h2>
+                <div class="project-grid">
+
+                    <a href="color_game.html" target="_blank" class="project-card">
+                        <span class="project-title">Color Match Game </span>
+                        <p class="project-desc">RGB color matching game.<br><span style="color: #00ff88; font-size: 0.8rem;">HTML + CSS + JS</span></p>
+                    </a>
+                    <a href="GameofLive.html" target="_blank" class="project-card">
+                        <span class="project-title">Game of Life </span>
+                        <p class="project-desc">Cellular automation simulation.<br><span style="color: #00ff88; font-size: 0.8rem;">HTML + CSS + JS</span></p>
+                    </a>
+                    <a href="minesweeper.html" target="_blank" class="project-card">
+                        <span class="project-title">Minesweeper </span>
+                        <p class="project-desc">Console game that solves itself automatically.<br><span style="color: #00f3ff; font-size: 0.8rem;">Python + OOP</span></p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Tomáš Vrabec. Built with passion.</p>
+        </footer>
+    </div>
+</body>
+<script>
+    function setTheme(color) {
+        document.documentElement.style.setProperty('--primary-color', color);
+        document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+    
+    // MOUSE SPOTLIGHT
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        document.body.style.setProperty('--x', x + 'px');
+        document.body.style.setProperty('--y', y + 'px');
+    });
+
+    // PARTICLES
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    
+    class Particle {
+        constructor() {
+            this.angle = Math.random() * Math.PI * 2;
+            this.radius = 100 + Math.random() * 300;
+            this.speed = (Math.random() * 0.0005 + 0.0002) * (Math.random() > 0.5 ? 1 : -1); /* Much slower */
+            this.size = Math.random() * 1.5 + 0.5; /* Smaller white: 0.5px to 2px */
+            this.drift = (Math.random() - 0.5) * 0.5;
+        }
+        update() {
+            this.angle += this.speed;
+            this.radius += this.drift * 0.1;
+            if (this.radius < 80) this.radius = 80;
+            if (this.radius > 450) this.radius = 450;
+            this.x = centerX + Math.cos(this.angle) * this.radius;
+            this.y = centerY + Math.sin(this.angle) * this.radius;
+        }
+        draw() {
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = 0.7; /* Much brighter */
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+    
+    for (let i = 0; i < 40; i++) {
+        particles.push(new Particle());
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+    
+    // Settings Panel Functions
+    function toggleSettings() {
+        document.getElementById('settings-panel').classList.toggle('hidden');
+    }
+    
+    // Close settings when clicking outside
+    document.addEventListener('click', (e) => {
+        const panel = document.getElementById('settings-panel');
+        const wrapper = document.querySelector('.settings-wrapper');
+        if (!wrapper.contains(e.target) && !panel.classList.contains('hidden')) {
+            panel.classList.add('hidden');
+        }
+    });
+    
+    let particlesEnabled = true;
+    function toggleParticles() {
+        particlesEnabled = !particlesEnabled;
+        document.getElementById('particles').style.display = particlesEnabled ? 'block' : 'none';
+    }
+    
+    function toggleBlackhole() {
+        const bh = document.querySelector('.black-hole-container');
+        bh.style.display = bh.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    // MODAL FUNCTIONS
+    function openModal() {
+        document.getElementById('project-modal').classList.add('active');
+    }
+    
+    function closeModal(e) {
+        if (e.target.classList.contains('modal-overlay')) {
+            document.getElementById('project-modal').classList.remove('active');
+        }
+    }
+    
+    function toggleModal(state) {
+        const modal = document.getElementById('project-modal');
+        if (state) modal.classList.add('active');
+        else modal.classList.remove('active');
+    }
+    
+    // LANGUAGE / TRANSLATION
+    const translations = {
+        en: {
+            language: "Language",
+            theme: "Theme Color",
+            effects: "Effects",
+            particles: "Particles",
+            blackHole: "Black Hole",
+            blackHole: "Black Hole",
+            description: "IT Student & Web Developer. Passionate about modern design, AI, and turning ideas into digital reality.",
+            skillRespons: "Responsive",
+            contactHeader: "Contact Me",
+            projectsBtn: "📂 Projects",
+            projectsTitle: "Selected Projects",
+            quickInfo: "Quick Info",
+            locationLabel: "Location",
+            locationValue: "Czech Republic",
+            focusLabel: "Focus",
+            focusValue: "Front-End",
+            expLabel: "Experience",
+            expValue: "Student",
+            statusLabel: "Status",
+            statusValue: "● Active",
+            footer: "© 2025 Tomáš Vrabec. No libraries used."
+        },
+        cs: {
+            language: "Jazyk",
+            theme: "Barva Tématu",
+            effects: "Efekty",
+            particles: "Částice",
+            blackHole: "Černá Díra",
+            description: "Student IT a webový vývojář. Zapálený pro moderní design, AI a měnění nápadů v digitální realitu.",
+            skillRespons: "Responzivita",
+            contactHeader: "Napište mi",
+            projectsBtn: " Projekty",
+            projectsTitle: "Vybrané Projekty",
+            quickInfo: "Rychlé Info",
+            locationLabel: "Lokace",
+            locationValue: "Česká Republika",
+            focusLabel: "Zaměření",
+            focusValue: "Front-End",
+            expLabel: "Zkušenosti",
+            expValue: "Student",
+            statusLabel: "Stav",
+            statusValue: "● Aktivní",
+            footer: "© 2025 Tomáš Vrabec. Žádné knihovny."
+        }
+    };
+
+    function setLanguage(lang) {
+        document.querySelectorAll('[data-key]').forEach(el => {
+            const key = el.getAttribute('data-key');
+            if (translations[lang] && translations[lang][key]) {
+                el.innerText = translations[lang][key];
+            }
+        });
+        
+        // Update buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            // Check if button text matches lang (EN/CZ)
+            const btnText = btn.innerText.trim();
+            if ((lang === 'en' && btnText === 'EN') || (lang === 'cs' && btnText === 'CZ')) {
+                btn.classList.add('active');
+            }
+        });
+    }
+    
+</script>
+</html>
