@@ -39,7 +39,7 @@ web.html
 | `web.html` | Hlavní portfolio|
 | `README.md` | Tento soubor |
 
-## 👤 Autor
+## AUTOR
 
 **Tomáš Vrabec**  
 GitHub: [@VrabecTomas](https://github.com/VrabecTomas)
