@@ -1,6 +1,6 @@
 #  Portfolio - Tomáš Vrabec
 
-## 📋 Popis projektu
+##  Popis projektu
 Moderní jednostránkové portfolio s animovaným pozadím.  Web prezentuje mé dovednosti jako webového vývojáře.
 
 ## 🛠️ Seznam použitých technologií a knihoven
@@ -20,19 +20,19 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon
 *   **Git** - Verzování kódu
 *   **VS Code** - Vývojové prostředí
 
-## 🚀 Návod na spuštění
+##  Návod na spuštění
 
 ```bash
 # Stačí otevřít soubor v prohlížeči:
 
-index_static.html
+web.html
 ```
 
 ## ⭐ Na co jsem nejvíce hrdý
 
  **Animace a grafika** - celkový přehled
 
-## 📁 Struktura souborů
+##  Struktura souborů
 
 | Soubor | Popis |
 |--------|-------|
