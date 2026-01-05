@@ -25,7 +25,6 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon bez 
 ```bash
 # Stačí otevřít soubor v prohlížeči:
 
-https://vrabectomas.github.io/2it-web-tomas-vrabec/web.html
 ```
 https://vrabectomas.github.io/2it-web-tomas-vrabec/web.html
 
