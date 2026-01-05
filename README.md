@@ -27,11 +27,11 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon bez 
 
 web.html
 ```
-1.  **[🌐 Otevřít online (GitHub Pages)](https://vrabectomas.github.io/2it-web-vrabec-tomas/)**  
+1.  **[🌐 Otevřít online (GitHub Pages)](https://vrabectomas.github.io/2it-web-vrabec-tomas/web.html)**  
     *(Pro funkčnost musí být projekt nahrán na GitHub a zapnuto GitHub Pages)*
 
 2.  **[📂 Otevřít lokálně (web.html)](web.html)**  
-    *(Pokud jste si stáhli soubory do počítače)*
+    *(Pokud jste si stáhli soubory do počítače)*e)*
 
 
 
