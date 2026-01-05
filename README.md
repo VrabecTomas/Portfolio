@@ -27,7 +27,7 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon bez 
 
 web.html
 ```
-https://vrabectomas.github.io/2it-web-vrabec-tomas/web.html
+file:///C:/Users/tomas/OneDrive/P%C5%99%C3%ADlohy/2it-web-vrabec-tomas/web.html
 
 ##  Na co jsem nejvíce hrdý
 
