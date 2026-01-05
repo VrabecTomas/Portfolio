@@ -27,8 +27,7 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon bez 
 
 web.html
 ```
-
-[>> Otevřít Portfolio (web.html) <<](web.html)
+(https://img.shields.io/badge/Open_Live_Portfolio-00f3ff?style=for-the-badge&logo=github&logoColor=black)](https://vrabectomas.github.io/2it-web-vrabec-tomas/)
 
 ##  Na co jsem nejvíce hrdý
 
