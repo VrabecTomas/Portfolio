@@ -26,7 +26,7 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon bez 
 # Stačí otevřít soubor v prohlížeči:
 
 ```
-https://github.com/VrabecTomas/2it-web-tomas-vrabec/upload/main
+ https://vrabectomas.github.io/2it-web-tomas-vrabec/web.html
 
 ##  Na co jsem nejvíce hrdý
 
