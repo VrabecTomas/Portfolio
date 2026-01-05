@@ -1,11 +1,11 @@
 #  Portfolio - Tomáš Vrabec
 
-##  Popis projektu
-Moderní jednostránkové portfolio s animovaným pozadím.  Web prezentuje mé dovednosti jako webového vývojáře.
+## Popis projektu
+Moderní jednostránkové portfolio s animovaným pozadím galaxie/černé díry a dynamickým přepínačem barevných témat. Web prezentuje mé dovednosti jako webového vývojáře.
 
-##  Seznam použitých technologií a knihoven
+## Seznam použitých technologií a knihoven
 
-Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon
+Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon bez zbytečných závislostí.
 
 ### Klíčové Technologie
 *   **HTML5**
@@ -20,7 +20,7 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon
 *   **Git** - Verzování kódu
 *   **VS Code** - Vývojové prostředí
 
-##  Návod na spuštění
+## Návod na spuštění
 
 ```bash
 # Stačí otevřít soubor v prohlížeči:
@@ -28,18 +28,23 @@ Tento projekt byl vytvořen s důrazem na čistý kód a maximální výkon
 web.html
 ```
 
-## Na co jsem nejvíce hrdý
+[>> Otevřít Portfolio (web.html) <<](web.html)
 
- **Animace a grafika** - celkový přehled
+## ⭐ Na co jsem nejvíce hrdý
 
-##  Struktura souborů
+ **Animace a přehled**
+
+## 📁 Struktura souborů
 
 | Soubor | Popis |
 |--------|-------|
-| `web.html` | Hlavní portfolio|
+| `web.html` | **Hlavní portfolio**
 | `README.md` | Tento soubor |
 
-## AUTOR
+## 👤 Autor
 
 **Tomáš Vrabec**  
 GitHub: [@VrabecTomas](https://github.com/VrabecTomas)
+
+---
+© 2025 Tomáš Vrabec
