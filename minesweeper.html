@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper AI - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #bd93f9;
+            --success: #00ff88;
+            --danger: #ff5f56;
+            --bg-dark: #0a0a0a;
+            --bg-panel: #141414;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000 100%);
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            padding: 20px;
+            max-width: 1200px;
+            width: 100%;
+            height: 90vh;
+        }
+
+        /* --- LEFT: GAME BOARD --- */
+        .game-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .header-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            gap: 2px;
+            background: #222;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+            user-select: none;
+        }
+
+        .cell {
+            width: 35px;
+            height: 35px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .cell:hover { background: #444; }
+        
+        .cell.revealed { background: #1a1a1a; cursor: default; }
+        .cell.flag { color: var(--danger); }
+        .cell.mine { background: var(--danger); color: #000; }
+        
+        .c-1 { color: #00f3ff; } /* Cyan */
+        .c-2 { color: #00ff88; } /* Green */
+        .c-3 { color: #ff5f56; } /* Red */
+        .c-4 { color: #bd93f9; } /* Purple */
+
+        /* --- RIGHT: CONTROLS & AI LOGS --- */
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Space Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .btn:hover { background: var(--primary); color: #000; }
+        .btn.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+
+        .log-box {
+            flex: 1;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: #888;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* New logs at bottom visually, but scrolled */
+        }
+
+        .log-entry { margin-bottom: 5px; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .log-ai { color: var(--success); }
+        .log-err { color: var(--danger); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Game Board -->
+        <div class="game-section">
+            <div class="header-bar">
+                <span>MINESWEEPER</span>
+                <span id="status">Ready</span>
+                <span>💣 <span id="mines-left">10</span></span>
+            </div>
+            <div id="grid-container" class="grid"></div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card">
+                <h2>Controls</h2>
+                <div class="controls">
+                    <button class="btn" onclick="newGame('easy')">Easy (8x8)</button>
+                    <button class="btn" onclick="newGame('medium')">Medium (10x10)</button>
+                    <button class="btn" onclick="newGame('hard')">Hard (12x12)</button>
+                </div>
+            </div>
+            
+            <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+                <h2>AI Agent</h2>
+                <button class="btn" id="ai-btn" onclick="toggleAI()">🤖 Watch AI Play</button>
+                <div class="log-box" id="ai-log" style="margin-top: 15px;">
+                    <div class="log-entry">System ready...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME LOGIC ---
+        class Minesweeper {
+            constructor(rows, cols, mines) {
+                this.rows = rows;
+                this.cols = cols;
+                this.totalMines = mines;
+                this.board = []; // 2D array of state
+                this.revealed = new Set();
+                this.flags = new Set();
+                this.mines = new Set(); // Set of "r,c" strings
+                this.gameOver = false;
+                this.firstClick = true;
+                
+                this.initBoard();
+            }
+
+            initBoard() {
+                this.board = Array(this.rows).fill().map(() => Array(this.cols).fill(0));
+            }
+
+            generateMines(safeR, safeC) {
+                let count = 0;
+                while (count < this.totalMines) {
+                    let r = Math.floor(Math.random() * this.rows);
+                    let c = Math.floor(Math.random() * this.cols);
+                    let key = `${r},${c}`;
+                    
+                    if (r === safeR && c === safeC) continue; // Safe start
+                    if (this.mines.has(key)) continue;
+
+                    this.mines.add(key);
+                    count++;
+                }
+            }
+
+            countAdjacent(r, c) {
+                let count = 0;
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i === 0 && j === 0) continue;
+                        let nr = r + i, nc = c + j;
+                        if (nr >= 0 && nr < this.rows && nc >= 0 && nc < this.cols) {
+                            if (this.mines.has(`${nr},${nc}`)) count++;
+                        }
+                    }
+                }
+                return count;
+            }
+
+            reveal(r, c) {
+                if (this.revealed.has(`${r},${c}`) || this.flags.has(`${r},${c}`) || this.gameOver) return;
+
+                // Safe Start
+                if (this.firstClick) {
+                    this.generateMines(r, c);
+                    this.firstClick = false;
+                }
+
+                this.revealed.add(`${r},${c}`);
+
+                if (this.mines.has(`${r},${c}`)) {
+                    this.gameOver = true;
+                    render();
+                    log("💥 BOOM! Game Over.", "log-err");
+                    setStatus("GAME OVER");
+                    return;
+                }
+
+                let adj = this.countAdjacent(r, c);
+                if (adj === 0) {
+                    // Flood fill
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            let nr = r + i, nc = c + j;
+                            if (nr >= 0 && nr < this.rows && nc >= 0 && nc < this.cols) {
+                                this.reveal(nr, nc);
+                            }
+                        }
+                    }
+                }
+
+                // Win Check
+                if (this.revealed.size === (this.rows * this.cols) - this.totalMines) {
+                    this.gameOver = true;
+                    setStatus("VICTORY!");
+                    log("🎉 BOARD CLEARED!", "log-ai");
+                }
+            }
+
+            toggleFlag(r, c) {
+                if (this.revealed.has(`${r},${c}`) || this.gameOver) return;
+                let key = `${r},${c}`;
+                if (this.flags.has(key)) this.flags.delete(key);
+                else this.flags.add(key);
+            }
+        }
+
+        // --- AI LOGIC ---
+        class MinesweeperAI {
+            constructor(game) {
+                this.game = game;
+                this.knownMines = new Set();
+                this.knownSafe = new Set();
+            }
+
+            updateKnowledge() {
+                if (this.game.firstClick) return false;
+
+                let progress = false;
+                for (let r = 0; r < this.game.rows; r++) {
+                    for (let c = 0; c < this.game.cols; c++) {
+                        let key = `${r},${c}`;
+                        if (!this.game.revealed.has(key)) continue;
+
+                        let num = this.game.countAdjacent(r, c);
+                        let neighbors = this.getNeighbors(r, c);
+                        
+                        let hidden = neighbors.filter(n => !this.game.revealed.has(`${n.r},${n.c}`));
+                        let flagged = neighbors.filter(n => this.game.flags.has(`${n.r},${n.c}`) || this.knownMines.has(`${n.r},${n.c}`));
+
+                        if (hidden.length === 0) continue;
+
+                        // Rule 1: All hidden are mines
+                        if (hidden.length === num - flagged.length) {
+                            hidden.forEach(n => {
+                                let k = `${n.r},${n.c}`;
+                                if (!this.knownMines.has(k)) {
+                                    this.knownMines.add(k);
+                                    if (!this.game.flags.has(k)) {
+                                        this.game.toggleFlag(n.r, n.c);
+                                        log(`AI: Flagged Mine at ${k}`, "log-ai");
+                                        progress = true;
+                                    }
+                                }
+                            });
+                        }
+
+                        // Rule 2: All hidden are safe
+                        if (flagged.length === num) {
+                            hidden.forEach(n => {
+                                let k = `${n.r},${n.c}`;
+                                if (!this.knownSafe.has(k)) {
+                                    this.knownSafe.add(k);
+                                    progress = true;
+                                }
+                            });
+                        }
+                    }
+                }
+                return progress;
+            }
+
+            getNeighbors(r, c) {
+                let res = [];
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i===0 && j===0) continue;
+                        let nr = r+i, nc = c+j;
+                        if (nr>=0 && nr<this.game.rows && nc>=0 && nc<this.game.cols) {
+                            res.push({r: nr, c: nc});
+                        }
+                    }
+                }
+                return res;
+            }
+
+            makeMove() {
+                if (this.game.gameOver) return;
+
+                // First move random
+                if (this.game.firstClick) {
+                    let r = Math.floor(this.game.rows/2);
+                    let c = Math.floor(this.game.cols/2);
+                    log("AI: First Move (Center)", "log-ai");
+                    this.game.reveal(r, c);
+                    return;
+                }
+
+                // Play safe
+                if (this.knownSafe.size > 0) {
+                    // Pop one
+                    let [val] = this.knownSafe;
+                    this.knownSafe.delete(val);
+                    let [r, c] = val.split(',').map(Number);
+                    this.game.reveal(r, c);
+                    return;
+                }
+
+                // Update info
+                if (this.updateKnowledge()) {
+                    // If we learned something, try playing safe again next tick
+                    return; 
+                }
+
+                // If stuck, guess
+                let unrevealed = [];
+                for(let r=0; r<this.game.rows; r++) {
+                    for(let c=0; c<this.game.cols; c++) {
+                        let k = `${r},${c}`;
+                        if (!this.game.revealed.has(k) && !this.game.flags.has(k)) {
+                            unrevealed.push({r,c});
+                        }
+                    }
+                }
+                
+                if (unrevealed.length > 0) {
+                    let move = unrevealed[Math.floor(Math.random() * unrevealed.length)];
+                    log(`AI: Guessing at ${move.r},${move.c}...`, "log-err");
+                    this.game.reveal(move.r, move.c);
+                }
+            }
+        }
+
+        // --- UI & LOOP ---
+        let game = null;
+        let ai = null;
+        let aiInterval = null;
+
+        function newGame(difficulty) {
+            stopAI();
+            let rows=8, cols=8, mines=10;
+            if (difficulty === 'medium') { rows=10; cols=10; mines=15; }
+            if (difficulty === 'hard') { rows=12; cols=12; mines=25; }
+            
+            game = new Minesweeper(rows, cols, mines);
+            ai = new MinesweeperAI(game);
+            
+            createGridUI(rows, cols);
+            render();
+            log(`New Game Started (${difficulty})`);
+            setStatus("Playing");
+        }
+
+        function createGridUI(rows, cols) {
+            const container = document.getElementById('grid-container');
+            container.style.gridTemplateColumns = `repeat(${cols}, 35px)`;
+            container.innerHTML = '';
+            
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.r = r;
+                    cell.dataset.c = c;
+                    
+                    cell.onclick = () => {
+                        if (aiInterval) return; // Disable clicks if AI is playing
+                        game.reveal(r, c);
+                        render();
+                    };
+                    
+                    cell.oncontextmenu = (e) => {
+                        e.preventDefault();
+                        if (aiInterval) return;
+                        game.toggleFlag(r, c);
+                        render();
+                    };
+                    
+                    container.appendChild(cell);
+                }
+            }
+        }
+
+        function render() {
+            document.getElementById('mines-left').innerText = game.totalMines - game.flags.size;
+            const cells = document.querySelectorAll('.cell');
+            
+            cells.forEach(el => {
+                let r = parseInt(el.dataset.r);
+                let c = parseInt(el.dataset.c);
+                let key = `${r},${c}`;
+
+                el.className = 'cell'; // reset
+                el.innerText = '';
+
+                if (game.revealed.has(key)) {
+                    el.classList.add('revealed');
+                    if (game.mines.has(key)) {
+                        el.classList.add('mine');
+                        el.innerText = '💣';
+                    } else {
+                        let count = game.countAdjacent(r, c);
+                        if (count > 0) {
+                            el.innerText = count;
+                            el.classList.add(`c-${count}`);
+                        }
+                    }
+                } else if (game.flags.has(key)) {
+                    el.classList.add('flag');
+                    el.innerText = '🚩';
+                }
+            });
+        }
+
+        function log(msg, type='') {
+            const box = document.getElementById('ai-log');
+            let div = document.createElement('div');
+            div.className = `log-entry ${type}`;
+            div.innerText = msg;
+            box.prepend(div); // Newest top
+        }
+
+        function setStatus(txt) {
+            document.getElementById('status').innerText = txt;
+        }
+
+        function toggleAI() {
+            if (aiInterval) {
+                stopAI();
+            } else {
+                startAI();
+            }
+        }
+
+        function startAI() {
+            document.getElementById('ai-btn').classList.add('active');
+            log('AI Agent Activated...', 'log-ai');
+            aiInterval = setInterval(() => {
+                if (game.gameOver) {
+                    stopAI();
+                    return;
+                }
+                ai.makeMove();
+                render();
+            }, 500); // Speed of AI
+        }
+
+        function stopAI() {
+            if (aiInterval) clearInterval(aiInterval);
+            aiInterval = null;
+            document.getElementById('ai-btn').classList.remove('active');
+        }
+
+        // Start default
+        newGame('easy');
+
+    </script>
+</body>
+</html>
